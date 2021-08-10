@@ -33,19 +33,21 @@ def collect_metrics(kill_queue, result_queue):
 
     while True:
         # Check queue to see if we need to finish
-        res = kill_queue.get_nowait()
-        if res:
-            print("Finishing metrics collection process")
+        if not kill_queue.empty():
+            res = kill_queue.get_nowait()
 
-            full_data = {
-                "cpu": cpu_stats.to_json(),
-                "mem": mem_stats.to_json(),
-                "disk": disk_stats.to_json(),
-                "net": net_stats.to_json(),
-            }
+            if res:
+                print("Finishing metrics collection process")
 
-            result_queue.put(json.dumps(full_data))
-            break
+                full_data = {
+                    "cpu": cpu_stats.to_json(),
+                    "mem": mem_stats.to_json(),
+                    "disk": disk_stats.to_json(),
+                    "net": net_stats.to_json(),
+                }
+
+                result_queue.put(json.dumps(full_data))
+                break
 
         timestamp = int(time.time() * 1000)
 

@@ -7,11 +7,13 @@ from hoststats.server.collection import collect_metrics, SLEEP_INTERVAL_SECS
 
 
 class TestHostStatsCollection(TestCase):
-    def test_collection():
+    def test_collection(self):
         kill_queue = Queue()
         result_queue = Queue()
 
-        bg_proc = Process(collect_metrics, args=(kill_queue, result_queue))
+        bg_proc = Process(
+            target=collect_metrics, args=(kill_queue, result_queue)
+        )
         bg_proc.start()
 
         sleep(5 * SLEEP_INTERVAL_SECS)
@@ -21,3 +23,5 @@ class TestHostStatsCollection(TestCase):
 
         actual = result_queue.get()
         actual = json.loads(actual)
+
+        print(actual)

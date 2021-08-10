@@ -117,7 +117,9 @@ class SystemStatsMonitor(object):
         dt_now = time.time()
         with open(OUTPUT_FILE, "a") as fh:
             for stat_name, stat_value in stats:
-                fh.write("{:.2f} {} {}\n".format(dt_now, stat_name, stat_value))
+                fh.write(
+                    "{:.2f} {} {}\n".format(dt_now, stat_name, stat_value)
+                )
 
 
 if __name__ == "__main__":

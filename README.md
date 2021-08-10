@@ -18,10 +18,17 @@ pip3 install hoststats
 ```
 
 Start the hoststats server (must be done on each host on which you wish to
-collect stats):
+collect stats). Note that this runs in the foreground, so you can put it to the
+background however you see fit, e.g.
 
 ```bash
-hoststats start
+hoststats start 2>&1 > /tmp/hoststats.log
+```
+
+Check it's up with:
+
+```bash
+curl localhost:5000/ping
 ```
 
 Create a client on another host with:

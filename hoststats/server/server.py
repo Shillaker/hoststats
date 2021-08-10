@@ -10,6 +10,11 @@ kill_queue = None
 result_queue = None
 
 
+@metrics_api.route("/ping")
+def ping():
+    return "PONG"
+
+
 @metrics_api.route("/start")
 def start_recording():
     global metrics_process

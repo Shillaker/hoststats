@@ -52,6 +52,12 @@ To develop:
 pip3 install -e .
 ```
 
+Run tests:
+
+```bash
+./bin/tests.sh
+```
+
 To release, make sure you have set up [Twine keyring
 support](https://twine.readthedocs.io/en/latest/#keyring-support), or a
 [`pypirc`](https://packaging.python.org/specifications/pypirc/), then:

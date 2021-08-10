@@ -2,6 +2,7 @@ import time
 import json
 from time import sleep
 import psutil
+import sys
 
 from hoststats.util.stats import ONE_MB, get_stats_dfs
 
@@ -40,13 +41,15 @@ def collect_metrics(kill_queue, result_queue):
                 print("Finishing metrics collection process")
 
                 full_data = {
-                    "cpu": cpu_stats.to_json(),
-                    "mem": mem_stats.to_json(),
-                    "disk": disk_stats.to_json(),
-                    "net": net_stats.to_json(),
+                    "cpu": cpu_stats.to_dict(orient="list"),
+                    "mem": mem_stats.to_dict(orient="list"),
+                    "disk": disk_stats.to_dict(orient="list"),
+                    "net": net_stats.to_dict(orient="list"),
                 }
 
                 result_queue.put(json.dumps(full_data))
+
+                sys.stdout.flush()
                 break
 
         timestamp = int(time.time() * 1000)

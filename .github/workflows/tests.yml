@@ -13,8 +13,17 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
-      # --- Formatting checks ---
       - name: "Install black"
         run: pip3 install black
       - name: "Python formatting check"
         run: ./bin/check_python.sh
+
+  tests:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: "Install deps"
+        run: pip3 install -r requirements.txt
+      - name: "Run tests"
+        run: ./bin/tests.sh

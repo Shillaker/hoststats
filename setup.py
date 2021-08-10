@@ -15,8 +15,9 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/Shillaker/hoststats",
-    package_dir={"": "hoststats"},
-    packages=setuptools.find_packages(where="hoststats"),
+    packages=["hoststats"],
     python_requires=">=3.6",
-    entry_points={"console_scripts": ["start = hoststats.command_line:start"]},
+    entry_points={
+        "console_scripts": ["hoststats = hoststats.cli:main"]
+    },
 )

@@ -8,17 +8,26 @@ results to a CSV file.
 
 ## Usage
 
-Start the hoststats server on each host with:
+Install:
 
 ```bash
-python3 -m hoststats start
+pip3 install hoststats
+```
+
+Start the hoststats server (must be done on each host on which you wish to
+collect stats):
+
+```bash
+hoststats start
 ```
 
 Create a client on another host with:
 
 ```python
-# Set up the client
+# Get list of IPs/ hostnames for hosts to be monitored
 ip_list = ["1.2.3.4", "5.6.7.8"]
+
+# Set up the client
 hs = HostStats(ip_list)
 
 # Start collection
@@ -33,6 +42,12 @@ hs.stop_and_write_to_csv("hoststats.csv")
 ## Development
 
 Ensure `pip` and `setuptools` are up to date and install requirements.
+
+To develop:
+
+```bash
+pip3 install -e .
+```
 
 To release:
 

@@ -1,6 +1,10 @@
 import click
+from flask import Flask
 
-import hoststats
+from hoststats.server.metrics import metrics_api
+
+app = Flask(__name__)
+app.register_blueprint(metrics_api)
 
 
 @click.group()
@@ -11,11 +15,7 @@ def top():
 @top.command()
 def start():
     click.echo("Starting hoststats")
-
-
-@top.command()
-def stop():
-    click.echo("Stopping hoststats")
+    app.run()
 
 
 def main():

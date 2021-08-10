@@ -6,6 +6,9 @@ for a set of hosts over a period of time.
 A Python API is provided for starting and finishing collection, and pulling the
 results to a CSV file.
 
+This is just hacked together to support experiments on distributed systems, and
+is not intended for anything more serious.
+
 ## Usage
 
 Install:
@@ -49,7 +52,9 @@ To develop:
 pip3 install -e .
 ```
 
-To release:
+To release, make sure you have set up [Twine keyring
+support](https://twine.readthedocs.io/en/latest/#keyring-support), or a
+[`pypirc`](https://packaging.python.org/specifications/pypirc/), then:
 
 ```bash
 ./release.sh

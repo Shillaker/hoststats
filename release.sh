@@ -8,5 +8,5 @@ python3 -m build
 
 ll dist/
 
-python3 -m twine upload --repository host-stats dist/*
+python3 -m twine upload --repository host_stats dist/*
 

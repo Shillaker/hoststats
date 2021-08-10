@@ -1,0 +1,11 @@
+black
+build
+flake8
+flask
+keyring
+numpy
+pandas
+requests
+setuptools
+twine
+wheel

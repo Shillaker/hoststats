@@ -4,8 +4,10 @@ click
 flake8
 flask
 keyring
+nose
 numpy
 pandas
+psutil
 requests
 setuptools
 twine

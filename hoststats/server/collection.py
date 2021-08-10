@@ -2,48 +2,14 @@ import time
 import json
 from time import sleep
 import psutil
-import pandas as pd
 
-ONE_MB = 1024.0 * 1024.0
+from hoststats.util.stats import ONE_MB, get_stats_dfs
+
 SLEEP_INTERVAL_SECS = 2
 
 
-cpu_stats = pd.DataFrame(
-    columns=[
-        "timestamp",
-        "CPU_COUNT",
-        "CPU_FREQ",
-        "CPU_PCT",
-        "CPU_TIME_IDLE",
-        "CPU_TIME_IOWAIT",
-        "CPU_TIME_USER",
-        "CPU_TIME_SYSTEM",
-        "CPU_PCT_IDLE",
-        "CPU_PCT_IOWAIT",
-        "CPU_PCT_USER",
-        "CPU_PCT_SYSTEM",
-    ]
-)
-
-mem_stats = pd.DataFrame(
-    columns=[
-        "timestamp",
-        "MEMORY_USED",
-        "MEMORY_ACTIVE",
-        "MEMORY_USED_PCT",
-        "MEMORY_AVAILABLE",
-        "SWAP_USED",
-    ]
-)
-
-disk_stats = pd.DataFrame(
-    columns=["timestamp", "DISK_READ_MB", "DISK_WRITE_MB"]
-)
-
-net_stats = pd.DataFrame(columns=["timestamp", "NET_SENT_MB", "NET_RECV_MB"])
-
-
 def collect_metrics(kill_queue, result_queue):
+    cpu_stats, mem_stats, disk_stats, net_stats = get_stats_dfs()
 
     # cpu_percent will return zeroes to start with, so we want to make an
     # initial call
@@ -81,7 +47,7 @@ def collect_metrics(kill_queue, result_queue):
             result_queue.put(json.dumps(full_data))
             break
 
-        timestamp = millisec = int(time.time() * 1000)
+        timestamp = int(time.time() * 1000)
 
         # CPU
         cpu_pct = psutil.cpu_percent(percpu=False)

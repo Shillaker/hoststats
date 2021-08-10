@@ -1,6 +1,6 @@
 import setuptools
 
-PKG_NAME = "host_stats"
+PKG_NAME = "hoststats"
 PKG_VERSION = "0.0.1"
 
 with open("README.md", "r", encoding="utf-8") as fh:
@@ -14,9 +14,9 @@ setuptools.setup(
     description="Host stats",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/Shillaker/host_stats",
-    package_dir={"": "host_stats"},
-    packages=setuptools.find_packages(where="host_stats"),
+    url="https://github.com/Shillaker/hoststats",
+    package_dir={"": "hoststats"},
+    packages=setuptools.find_packages(where="hoststats"),
     python_requires=">=3.6",
-    entry_points={"console_scripts": ["start = host_stats.server:start"]},
+    entry_points={"console_scripts": ["start = hoststats.command_line:start"]},
 )

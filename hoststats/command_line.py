@@ -1,4 +1,4 @@
-import host_stats
+import hoststats
 
 
 def start():

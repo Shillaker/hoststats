@@ -1,6 +1,6 @@
-# Host-stats
+# hoststats
 
-Host-stats captures resource usage (memory usage, CPU cycles, network transfers)
+hoststats captures resource usage (memory usage, CPU cycles, network transfers)
 for a set of hosts over a period of time.
 
 A Python API is provided for starting and finishing collection, and pulling the
@@ -8,10 +8,10 @@ results to a CSV file.
 
 ## Usage
 
-Start the host-stats server on each host with:
+Start the hoststats server on each host with:
 
 ```bash
-python3 -m host-stats start
+python3 -m hoststats start
 ```
 
 Create a client on another host with:
@@ -27,7 +27,7 @@ hs.start_collection()
 # Wait some time
 
 # Write stats to CSV
-hs.stop_and_write_to_csv("host_stats.csv")
+hs.stop_and_write_to_csv("hoststats.csv")
 ```
 
 ## Development

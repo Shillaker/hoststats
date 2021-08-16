@@ -8,6 +8,6 @@ WORKDIR /code/hoststats
 RUN git checkout v$VERSION
 
 RUN pip3 install -r requirements.txt
-RUN pip3 install -e .
+RUN pip3 install .
 
 CMD ["hoststats", "start"]

@@ -3,7 +3,7 @@ from time import sleep
 from unittest import TestCase
 
 from hoststats.client import HostStats
-from hoststats.util.validation import validate_csv_data
+from hoststats.validation import validate_csv_data
 
 TEST_HOSTS = ["target-one", "target-two"]
 

@@ -3,7 +3,7 @@ import json
 import pandas as pd
 import requests
 
-from hoststats.util.stats import CPU_STATS, DISK_STATS, MEM_STATS, NET_STATS
+from hoststats.stats import CPU_STATS, DISK_STATS, MEM_STATS, NET_STATS
 
 SERVER_PORT = "5000"
 

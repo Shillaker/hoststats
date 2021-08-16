@@ -3,22 +3,16 @@ version: "3"
 services:
   target-one:
     image: shillaker/hoststats:${VERSION}
-    volumes:
-      - ./:/code/
     expose:
       - "5000"
 
   target-two:
     image: shillaker/hoststats:${VERSION}
-    volumes:
-      - ./:/code/
     expose:
       - "5000"
 
   client:
     image: shillaker/hoststats:${VERSION}
-    volumes:
-      - ./:/code/
     depends_on:
       - target-one
       - target-two

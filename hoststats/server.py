@@ -1,5 +1,6 @@
-from flask import Blueprint
 from multiprocessing import Process, Queue
+
+from flask import Blueprint
 
 from hoststats.collection import collect_metrics
 

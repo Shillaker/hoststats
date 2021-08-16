@@ -1,11 +1,11 @@
-from unittest import TestCase
+import json
+import time
 from multiprocessing import Process, Queue
 from time import sleep
-import time
-import json
+from unittest import TestCase
 
 from hoststats.app import app
-from hoststats.collection import collect_metrics, SLEEP_INTERVAL_SECS
+from hoststats.collection import SLEEP_INTERVAL_SECS, collect_metrics
 
 
 class TestHostStatsCollection(TestCase):

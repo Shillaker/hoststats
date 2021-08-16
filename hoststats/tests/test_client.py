@@ -1,6 +1,6 @@
-from unittest import TestCase
-from time import sleep
 from os.path import exists
+from time import sleep
+from unittest import TestCase
 
 from hoststats.client import HostStats
 

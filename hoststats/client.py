@@ -1,8 +1,9 @@
-import requests
 import json
-import pandas as pd
 
-from hoststats.util.stats import CPU_STATS, MEM_STATS, DISK_STATS, NET_STATS
+import pandas as pd
+import requests
+
+from hoststats.util.stats import CPU_STATS, DISK_STATS, MEM_STATS, NET_STATS
 
 SERVER_PORT = "5000"
 

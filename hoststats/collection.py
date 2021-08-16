@@ -1,8 +1,9 @@
-import time
 import json
-from time import sleep
-import psutil
 import sys
+import time
+from time import sleep
+
+import psutil
 
 from hoststats.util.stats import ONE_MB, get_stats_dfs
 

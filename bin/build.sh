@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+set -x
 
 export VERSION=$(cat VERSION)
 TAG=shillaker/hoststats:${VERSION}

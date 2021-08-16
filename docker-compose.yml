@@ -6,7 +6,7 @@ services:
     expose:
       - "5000"
     volumes:
-      - ./:/code/
+      - ${PROJ_ROOT}/:/code/
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/ping"]
       interval: 5s
@@ -18,7 +18,7 @@ services:
     expose:
       - "5000"
     volumes:
-      - ./:/code/
+      - ${PROJ_ROOT}/:/code/
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/ping"]
       interval: 5s
@@ -28,7 +28,7 @@ services:
   client:
     build: .
     volumes:
-      - ./:/code/
+      - ${PROJ_ROOT}/:/code/
     depends_on:
       - target-one
       - target-two

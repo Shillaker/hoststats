@@ -3,7 +3,7 @@ import json
 import pandas as pd
 import requests
 
-from hoststats.util.stats import CPU_STATS, DISK_STATS, MEM_STATS, NET_STATS
+from hoststats.stats import CPU_STATS, DISK_STATS, MEM_STATS, NET_STATS
 
 SERVER_PORT = "5000"
 
@@ -29,7 +29,7 @@ class HostStats:
                 print(f"Failed to ping {h}, got code {status}")
                 successful_init = False
 
-            if data.strip() != "PONG":
+            if data != "PONG":
                 print(f"Got unexpected response to ping: {data}")
                 successful_init = False
 
@@ -48,7 +48,7 @@ class HostStats:
             resp = requests.get(f"http://{host}:{SERVER_PORT}/{url}")
             status_code = resp.status_code
 
-            data = resp.text()
+            data = resp.text
 
         return status_code, data
 
@@ -84,41 +84,40 @@ class HostStats:
             fh.write(",".join(csv_cols))
             fh.write("\n")
 
-        # TODO - do this in parallel
         for h in self.host_list:
             print(f"Writing results for {h}")
-            status, data = self.get_request(h, "stop")
-            data_json = json.loads(data)
 
-            cpu_stats = pd.read_json(
-                json.dumps(data_json["cpu"]), orient="list"
-            )
-            mem_stats = pd.read_json(
-                json.dumps(data_json["mem"]), orient="list"
-            )
-            disk_stats = pd.read_json(
-                json.dumps(data_json["disk"]), orient="list"
-            )
-            net_stats = pd.read_json(
-                json.dumps(data_json["net"]), orient="list"
-            )
+            # Pull the results
+            df = self.pull_results_for_host(h)
 
-            n_readings = len(cpu_stats["timestamp"])
-            host_col = [h] * n_readings
+            # Append to the CSV file
+            df.to_csv(csv_path, header=False, mode="a", index=False)
 
-            merged = pd.DataFrame(columns=["timestamp", "host"])
-            merged["timestamp"] = cpu_stats["timestamp"]
-            merged["host"] = host_col
+    def pull_results_for_host(self, host):
+        status, data = self.get_request(host, "stop")
+        data_json = json.loads(data)
 
-            merged = pd.concat(
-                [
-                    merged,
-                    cpu_stats[CPU_STATS],
-                    mem_stats[MEM_STATS],
-                    disk_stats[DISK_STATS],
-                    net_stats[NET_STATS],
-                ],
-                axis=1,
-            )
+        cpu_stats = pd.read_json(json.dumps(data_json["cpu"]), orient="list")
+        mem_stats = pd.read_json(json.dumps(data_json["mem"]), orient="list")
+        disk_stats = pd.read_json(json.dumps(data_json["disk"]), orient="list")
+        net_stats = pd.read_json(json.dumps(data_json["net"]), orient="list")
 
-            merged.to_csv(csv_path, header=False, mode="a", index=False)
+        n_readings = len(cpu_stats["timestamp"])
+        host_col = [host] * n_readings
+
+        merged = pd.DataFrame(columns=["timestamp", "host"])
+        merged["timestamp"] = cpu_stats["timestamp"]
+        merged["host"] = host_col
+
+        merged = pd.concat(
+            [
+                merged,
+                cpu_stats[CPU_STATS],
+                mem_stats[MEM_STATS],
+                disk_stats[DISK_STATS],
+                net_stats[NET_STATS],
+            ],
+            axis=1,
+        )
+
+        return merged

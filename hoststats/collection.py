@@ -5,7 +5,7 @@ from time import sleep
 
 import psutil
 
-from hoststats.util.stats import ONE_MB, get_stats_dfs
+from hoststats.stats import ONE_MB, get_stats_dfs
 
 SLEEP_INTERVAL_SECS = 2
 

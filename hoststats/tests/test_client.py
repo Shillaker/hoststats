@@ -1,12 +1,12 @@
-from os.path import exists
 from time import sleep
 from unittest import TestCase
 
 from hoststats.client import HostStats
+from hoststats.validation import validate_csv_data
 
 
-class TestHostStatsAPI(TestCase):
-    def test_collection(self):
+class TestHostStatsClient(TestCase):
+    def test_collection_locally(self):
         hosts = ["localhost"]
 
         s = HostStats(hosts, test_mode=True)
@@ -17,4 +17,4 @@ class TestHostStatsAPI(TestCase):
         csv_path = "/tmp/foo.csv"
         s.stop_and_write_to_csv(csv_path)
 
-        self.assertTrue(exists(csv_path))
+        self.assertTrue(validate_csv_data(csv_path, hosts))

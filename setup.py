@@ -1,14 +1,16 @@
 import setuptools
 
 PKG_NAME = "hoststats"
-PKG_VERSION = "0.0.2"
+
+with open("VERSION", "r") as fh:
+    pkg_ver = fh.read().strip()
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name=PKG_NAME,
-    version=PKG_VERSION,
+    version=pkg_ver,
     author="Simon Shillaker",
     author_email="foo@bar.com",
     description="Host stats",

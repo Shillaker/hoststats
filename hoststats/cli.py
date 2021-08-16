@@ -11,7 +11,7 @@ def top():
 @top.command()
 def start():
     click.echo("Starting hoststats")
-    app.run()
+    app.run(debug=True, host="0.0.0.0")
 
 
 def main():

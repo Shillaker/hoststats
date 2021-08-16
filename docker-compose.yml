@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+  target-one:
+    image: shillaker/hoststats:${VERSION}
+    expose:
+      - "5000"
+
+  target-two:
+    image: shillaker/hoststats:${VERSION}
+    expose:
+      - "5000"
+
+  client:
+    image: shillaker/hoststats:${VERSION}
+    depends_on:
+      - target-one
+      - target-two
+    command: "/bin/bash"

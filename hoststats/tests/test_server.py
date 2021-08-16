@@ -103,12 +103,12 @@ class TestHostStatsCollection(TestCase):
         # Sense-check some percentages
         for cpu_pct in cpu["CPU_PCT"]:
             self.assertGreaterEqual(cpu_pct, 0)
-            self.assertLess(cpu_pct, 100)
+            self.assertLessEqual(cpu_pct, 100)
 
         for cpu_pct in cpu["CPU_0_PCT_IOWAIT"]:
             self.assertGreaterEqual(cpu_pct, 0)
-            self.assertLess(cpu_pct, 100)
+            self.assertLessEqual(cpu_pct, 100)
 
         for mem_pct in mem["MEMORY_USED_PCT"]:
             self.assertGreaterEqual(mem_pct, 0)
-            self.assertLess(mem_pct, 100)
+            self.assertLessEqual(mem_pct, 100)

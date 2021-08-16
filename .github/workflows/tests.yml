@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
-      - name: "Install black"
-        run: pip3 install black
+      - name: "Install deps"
+        run: pip3 install -r requirements.txt
       - name: "Python formatting check"
         run: ./bin/check_python.sh
 

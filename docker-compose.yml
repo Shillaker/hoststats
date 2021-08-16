@@ -2,35 +2,24 @@ version: "3"
 
 services:
   target-one:
-    build: .
+    image: shillaker/hoststats:${VERSION}
+    volumes:
+      - ./:/code/
     expose:
       - "5000"
-    volumes:
-      - ${PROJ_ROOT}/:/code/
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/ping"]
-      interval: 5s
-      timeout: 3s
-      retries: 3
 
   target-two:
-    build: .
+    image: shillaker/hoststats:${VERSION}
+    volumes:
+      - ./:/code/
     expose:
       - "5000"
-    volumes:
-      - ${PROJ_ROOT}/:/code/
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/ping"]
-      interval: 5s
-      timeout: 3s
-      retries: 3
 
   client:
-    build: .
+    image: shillaker/hoststats:${VERSION}
     volumes:
-      - ${PROJ_ROOT}/:/code/
+      - ./:/code/
     depends_on:
       - target-one
       - target-two
     command: "/bin/bash"
-

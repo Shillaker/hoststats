@@ -65,10 +65,26 @@ Run tests:
 ./bin/tests.sh
 ```
 
-To release, make sure you have set up [Twine keyring
+## Releasing
+
+To push to PyPI, make sure you have set up [Twine keyring
 support](https://twine.readthedocs.io/en/latest/#keyring-support), or a
-[`pypirc`](https://packaging.python.org/specifications/pypirc/), then:
+[`pypirc`](https://packaging.python.org/specifications/pypirc/).
+
+Then increment the version in `VERSION`.
+
+Then:
 
 ```bash
-./release.sh
+# Tag the code
+./bin/tag.sh
+
+# Build the Docker image
+./bin/build.sh
+
+# Check the distributed tests passs
+./bin/dist_test.sh
+
+# Push the package
+./bin/release.sh
 ```

@@ -1,7 +1,8 @@
-from hoststats.util.stats import CPU_STATS, MEM_STATS, NET_STATS, DISK_STATS
+from os.path import exists
 
 import pandas as pd
-from os.path import exists
+
+from hoststats.util.stats import CPU_STATS, DISK_STATS, MEM_STATS, NET_STATS
 
 
 def validate_csv_data(csv_path, expected_hosts):

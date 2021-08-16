@@ -1,12 +1,9 @@
-from os.path import exists
+import socket
 from time import sleep
 from unittest import TestCase
-import pandas as pd
-import socket
 
 from hoststats.client import HostStats
 from hoststats.util.validation import validate_csv_data
-
 
 TEST_HOSTS = ["target-one", "target-two"]
 

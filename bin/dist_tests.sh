@@ -11,6 +11,12 @@ export DOCKER_BUILDKIT=1
 
 pushd ${PROJ_ROOT} >> /dev/null
 
+echo "DIR CONTENTS:"
+ls -al
+
+echo "WHICH DIR:"
+pwd
+
 # Run dist tests in client container
 docker-compose run --rm client nosetests hoststats.disttest --nocapture
 

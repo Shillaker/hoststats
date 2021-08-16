@@ -29,7 +29,7 @@ class HostStats:
                 print(f"Failed to ping {h}, got code {status}")
                 successful_init = False
 
-            if data.strip() != "PONG":
+            if data != "PONG":
                 print(f"Got unexpected response to ping: {data}")
                 successful_init = False
 
@@ -48,7 +48,7 @@ class HostStats:
             resp = requests.get(f"http://{host}:{SERVER_PORT}/{url}")
             status_code = resp.status_code
 
-            data = resp.text()
+            data = resp.text
 
         return status_code, data
 

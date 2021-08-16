@@ -1,7 +1,7 @@
 import setuptools
 
 PKG_NAME = "hoststats"
-PKG_VERSION = "0.0.1"
+PKG_VERSION = "0.0.2"
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()

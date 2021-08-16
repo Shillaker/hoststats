@@ -6,6 +6,9 @@ for a set of hosts over a period of time.
 A Python API is provided for starting and finishing collection, and pulling the
 results to a CSV file.
 
+This is a quick-and-dirty project to support experiments on distributed systems,
+and not intended for anything more serious.
+
 ## Usage
 
 Install:
@@ -15,10 +18,17 @@ pip3 install hoststats
 ```
 
 Start the hoststats server (must be done on each host on which you wish to
-collect stats):
+collect stats). Note that this runs in the foreground, so you can put it to the
+background however you see fit, e.g.
 
 ```bash
-hoststats start
+hoststats start 2>&1 > /tmp/hoststats.log
+```
+
+Check it's up with:
+
+```bash
+curl localhost:5000/ping
 ```
 
 Create a client on another host with:
@@ -49,7 +59,15 @@ To develop:
 pip3 install -e .
 ```
 
-To release:
+Run tests:
+
+```bash
+./bin/tests.sh
+```
+
+To release, make sure you have set up [Twine keyring
+support](https://twine.readthedocs.io/en/latest/#keyring-support), or a
+[`pypirc`](https://packaging.python.org/specifications/pypirc/), then:
 
 ```bash
 ./release.sh

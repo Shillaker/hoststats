@@ -1,6 +1,6 @@
 import click
 
-import hoststats
+from hoststats.app import app
 
 
 @click.group()
@@ -11,11 +11,7 @@ def top():
 @top.command()
 def start():
     click.echo("Starting hoststats")
-
-
-@top.command()
-def stop():
-    click.echo("Stopping hoststats")
+    app.run()
 
 
 def main():

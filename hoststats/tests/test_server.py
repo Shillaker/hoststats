@@ -4,10 +4,39 @@ from time import sleep
 import time
 import json
 
+from hoststats.app import app
 from hoststats.server.collection import collect_metrics, SLEEP_INTERVAL_SECS
 
 
 class TestHostStatsCollection(TestCase):
+    def setUp(self):
+        app.config["TESTING"] = True
+        self.client = app.test_client()
+
+    def test_ping(self):
+        res = self.client.get("ping")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data.decode("utf-8"), "PONG")
+
+    def test_api(self):
+        # Start the collection
+        start_time_millis = int(time.time() * 1000)
+        self.client.get("start")
+
+        # Sleep for a couple of intervals
+        n_intervals = 2
+        sleep(n_intervals * SLEEP_INTERVAL_SECS + 1)
+
+        # Stop the collection
+        res = self.client.get("stop")
+        end_time_millis = int(time.time() * 1000)
+
+        actual = json.loads(res.data.decode("utf-8"))
+
+        self.check_collection_response(
+            n_intervals, start_time_millis, end_time_millis, actual
+        )
+
     def test_collection(self):
         # Start metrics collection in background
         kill_queue = Queue()
@@ -21,7 +50,7 @@ class TestHostStatsCollection(TestCase):
         bg_proc.start()
 
         # Allow a number of intervals to have happened
-        n_intervals = 3
+        n_intervals = 2
         sleep(n_intervals * SLEEP_INTERVAL_SECS + 1)
 
         # Kill the background collection process
@@ -33,8 +62,14 @@ class TestHostStatsCollection(TestCase):
         # Get and parse result
         actual = result_queue.get()
         actual = json.loads(actual)
-        print(actual)
 
+        self.check_collection_response(
+            n_intervals, start_time_millis, end_time_millis, actual
+        )
+
+    def check_collection_response(
+        self, n_intervals, start_time_millis, end_time_millis, actual
+    ):
         # Check it has the entries we expect
         self.assertListEqual(
             list(actual.keys()), ["cpu", "mem", "disk", "net"]

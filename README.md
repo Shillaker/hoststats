@@ -6,8 +6,8 @@ for a set of hosts over a period of time.
 A Python API is provided for starting and finishing collection, and pulling the
 results to a CSV file.
 
-This is just hacked together to support experiments on distributed systems, and
-is not intended for anything more serious.
+This is a quick-and-dirty project to support experiments on distributed systems,
+and not intended for anything more serious.
 
 ## Usage
 

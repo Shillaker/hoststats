@@ -1,35 +1,59 @@
 import requests
 
+SERVER_PORT = "5000"
+
 
 class HostStats:
-    def __init__(self, host_list):
+    def __init__(self, host_list, test_mode=False):
         self.host_list = host_list
+        self.test_mode = test_mode
+
+        if self.test_mode:
+            from hoststats.app import app
+
+            self.client = app.test_client()
 
         successful_init = True
 
         for h in host_list:
             print(f"Pinging {h}")
-            resp = requests.get(f"http://{h}:5000/ping")
+            status, data = resp = self.get_request(h, "ping")
 
-            if resp.status_code != 200:
-                print(f"Failed to ping {h}, got code {resp.status_code}")
+            if status != 200:
+                print(f"Failed to ping {h}, got code {status}")
                 successful_init = False
 
-            if resp.text().strip() != "PONG":
-                print(f"Got unexpected response to ping: {resp.text}")
+            if data.strip() != "PONG":
+                print(f"Got unexpected response to ping: {data}")
                 successful_init = False
 
         if not successful_init:
             raise RuntimeError("hoststats client failed to initialise")
+
+    def get_request(self, host, url):
+        if self.test_mode:
+            resp = self.client.get(url)
+            status_code = resp.status_code
+
+            data = None
+            if resp.data:
+                data = resp.data.decode("utf-8")
+        else:
+            resp = requests.get(f"http://{host}:{SERVER_PORT}/{url}")
+            status_code = resp.status_code
+
+            data = resp.text()
+
+        return status_code, data
 
     def start_collection(self):
         successful_start = True
 
         for h in self.host_list:
             print(f"Starting collection on {h}")
-            resp = requests.get(f"http://{h}:5000/start")
+            status, resp = self.get_request(h, "start")
 
-            if resp.status_code != 200:
+            if status != 200:
                 print(f"Failed to start on {h}, got code {resp.status_code}")
                 successful_start = False
 

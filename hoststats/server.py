@@ -1,7 +1,7 @@
 from flask import Blueprint
 from multiprocessing import Process, Queue
 
-from hoststats.server.collection import collect_metrics
+from hoststats.collection import collect_metrics
 
 metrics_api = Blueprint("metrics_api", __name__)
 

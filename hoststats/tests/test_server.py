@@ -5,7 +5,7 @@ import time
 import json
 
 from hoststats.app import app
-from hoststats.server.collection import collect_metrics, SLEEP_INTERVAL_SECS
+from hoststats.collection import collect_metrics, SLEEP_INTERVAL_SECS
 
 
 class TestHostStatsCollection(TestCase):

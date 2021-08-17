@@ -1,13 +1,10 @@
-# hoststats
+# hoststats [![Tests](https://github.com/Shillaker/hoststats/workflows/Tests/badge.svg?branch=master)](https://github.com/Shillaker/hoststats/actions) [![License](https://img.shields.io/github/license/Shillaker/hoststats.svg)](https://github.com/Shillaker/hoststats/blob/master/LICENSE.md)  [![Release](https://img.shields.io/github/release/Shillaker/hoststats.svg)](https://github.com/Shillaker/hoststats/releases/)
 
-hoststats captures resource usage (memory usage, CPU cycles, network transfers)
-for a set of hosts over a period of time.
+`hoststats` captures resource usage (CPU, memory, network, disk) on a set of
+remote hosts over a period of time.
 
-A Python API is provided for starting and finishing collection, and pulling the
-results to a CSV file.
-
-This is a quick-and-dirty project to support experiments on distributed systems,
-and not intended for anything more serious.
+Collection can be started and stopped from a client host via HTTP or the
+included Python API. Results are written to a CSV file on the client machine.
 
 ## Usage
 
@@ -28,7 +25,7 @@ hoststats start 2>&1 > /tmp/hoststats.log
 Check it's up with:
 
 ```bash
-curl localhost:5000/ping
+curl <hostname>:5000/ping
 ```
 
 Create a client on another host with:
@@ -88,3 +85,6 @@ Then:
 # Push the package
 ./bin/release.sh
 ```
+
+Once everything looks good, create a release manually [on
+Github](https://github.com/Shillaker/hoststats/releases/new).

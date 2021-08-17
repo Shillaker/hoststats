@@ -36,13 +36,9 @@ curl http://localhost:5000/ping
 
 ## The `hoststats` client
 
-First check your hosts are running the server and accessible from the client:
+The `hoststats` client host can access `hoststats` servers in two ways.
 
-```bash
-curl http://<target_hostname>:5000/ping
-```
-
-Then create a client in Python with:
+### Python API
 
 ```python
 from hostats.client import HostStats
@@ -60,6 +56,21 @@ hs.start_collection()
 
 # Write stats to CSV
 hs.stop_and_write_to_csv("hoststats.csv")
+```
+
+### HTTP API
+
+```bash
+# Check a given host is running the server and accessible
+curl http://<target_host>:5000/ping
+
+# Start the recording
+curl http://<target_host>:5000/start
+
+# Wait some time
+
+# Get stats as JSON
+curl http://<target_host>:5000/stop > hoststats.csv
 ```
 
 ## Development

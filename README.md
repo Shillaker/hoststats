@@ -19,7 +19,7 @@ collect stats). Note that this runs in the foreground, so you can put it to the
 background however you see fit, e.g.
 
 ```bash
-hoststats start 2>&1 > /tmp/hoststats.log
+nohup hoststats start > /var/log/hoststats.log 2>&1 &
 ```
 
 Check it's up with:
@@ -31,6 +31,8 @@ curl <hostname>:5000/ping
 Create a client on another host with:
 
 ```python
+from hostats.client import HostStats
+
 # Get list of IPs/ hostnames for hosts to be monitored
 ip_list = ["1.2.3.4", "5.6.7.8"]
 

@@ -19,7 +19,7 @@ collect stats). Note that this runs in the foreground, so you can put it to the
 background however you see fit, e.g.
 
 ```bash
-hoststats start > /var/log/hoststats.log 2>&1 &
+nohup hoststats start > /var/log/hoststats.log 2>&1 &
 ```
 
 Check it's up with:

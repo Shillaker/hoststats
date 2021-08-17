@@ -18,6 +18,14 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/Shillaker/hoststats",
     packages=["hoststats"],
+    install_requires=[
+        "click",
+        "flask",
+        "numpy",
+        "pandas",
+        "psutil",
+        "requests",
+    ],
     python_requires=">=3.6",
     entry_points={"console_scripts": ["hoststats = hoststats.cli:main"]},
 )

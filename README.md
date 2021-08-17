@@ -6,34 +6,48 @@ remote hosts over a period of time.
 Collection can be started and stopped from a client host via HTTP or the
 included Python API. Results are written to a CSV file on the client machine.
 
-## Usage
+## The `hoststats` server
 
-Install:
+The `hoststats` server must run on each host from which you wish to collect
+metrics, and port `5000` must be accessible to the client.
+
+### Using Docker
 
 ```bash
+# Run container in background
+docker run -d --rm -p 5000:5000 shillaker/hoststats:0.0.5
+
+# Check
+curl http://localhost:5000/ping
+```
+
+### Using Pip
+
+```bash
+# Install
 pip3 install hoststats
-```
 
-Start the hoststats server (must be done on each host on which you wish to
-collect stats). Note that this runs in the foreground, so you can put it to the
-background however you see fit, e.g.
-
-```bash
+# Start the server in the background, e.g.
 nohup hoststats start > /var/log/hoststats.log 2>&1 &
+
+# Check
+curl http://localhost:5000/ping
 ```
 
-Check it's up with:
+## The `hoststats` client
+
+First check your hosts are running the server and accessible from the client:
 
 ```bash
-curl <hostname>:5000/ping
+curl http://<target_hostname>:5000/ping
 ```
 
-Create a client on another host with:
+Then create a client in Python with:
 
 ```python
 from hostats.client import HostStats
 
-# Get list of IPs/ hostnames for hosts to be monitored
+# Create list of IPs/ hostnames for target hosts
 ip_list = ["1.2.3.4", "5.6.7.8"]
 
 # Set up the client

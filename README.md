@@ -31,6 +31,8 @@ curl <hostname>:5000/ping
 Create a client on another host with:
 
 ```python
+from hostats.client import HostStats
+
 # Get list of IPs/ hostnames for hosts to be monitored
 ip_list = ["1.2.3.4", "5.6.7.8"]
 

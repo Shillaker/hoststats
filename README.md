@@ -60,6 +60,9 @@ hs.stop_and_write_to_csv("hoststats.csv")
 
 ### HTTP API
 
+Note that although the HTTP API works, the data that comes out requires more
+processing.
+
 ```bash
 # Check a given host is running the server and accessible
 curl http://<target_host>:5000/ping
@@ -70,7 +73,7 @@ curl http://<target_host>:5000/start
 # Wait some time
 
 # Get stats as JSON
-curl http://<target_host>:5000/stop > hoststats.csv
+curl http://<target_host>:5000/stop > /tmp/hoststats.json
 ```
 
 ## Development

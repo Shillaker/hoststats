@@ -76,6 +76,30 @@ curl http://<target_host>:5000/start
 curl http://<target_host>:5000/stop > /tmp/hoststats.json
 ```
 
+## Handling results
+
+If the data has been written to CSV via the Python API, you can access the data
+with the `HostStatsResults` class:
+
+```python
+from hoststats.results import HostStatsResults
+
+csv_file = "hoststats.csv"
+s = HostStatsResults(csv_file)
+
+# Get list of hosts in results
+s.get_hosts()
+
+# Get list of available stats
+s.get_stats()
+
+# Get timeseries of given stat per host
+s.get_stat_per_host("CPU_PCT")
+
+# Get average stat across hosts
+s.get_avg_stat("MEMORY_USED")
+```
+
 ## Development
 
 Ensure `pip` and `setuptools` are up to date and install requirements.

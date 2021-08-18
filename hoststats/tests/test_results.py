@@ -3,7 +3,7 @@ from unittest import TestCase
 
 from hoststats.client import HostStats
 from hoststats.results import HostStatsResults
-from hoststats.stats import CPU_STATS, MEM_STATS, DISK_STATS, NET_STATS
+from hoststats.stats import CPU_STATS, DISK_STATS, MEM_STATS, NET_STATS
 
 
 class TestHostStatsResults(TestCase):

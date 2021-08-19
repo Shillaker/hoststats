@@ -11,9 +11,14 @@ services:
     expose:
       - "5000"
 
+  target-three:
+    image: shillaker/hoststats:${VERSION}
+    expose:
+      - "5000"
+
   client:
     image: shillaker/hoststats:${VERSION}
     depends_on:
       - target-one
       - target-two
-    command: "/bin/bash"
+      - target-three

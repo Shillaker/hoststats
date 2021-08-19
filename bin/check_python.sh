@@ -9,7 +9,7 @@ FILES_TO_CHECK=$(git ls-files -- "*.py")
 python3 -m black --check ${FILES_TO_CHECK}
 
 # Run isort
-python3 -m isort ${FILES_TO_CHECK}
+python3 -m isort --profile black ${FILES_TO_CHECK}
 
 # Run flake8
 python3 -m flake8 ${FILES_TO_CHECK}

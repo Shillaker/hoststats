@@ -76,6 +76,32 @@ curl http://<target_host>:5000/start
 curl http://<target_host>:5000/stop > /tmp/hoststats.json
 ```
 
+## Proxies
+
+If your client host can't directly access the target hosts, you can specify a
+proxy server, which must also have the `hoststats` server running. This proxy
+can also be included in the list of target hosts.
+
+This can be useful in environments like Kubernetes deployments, where you'd get
+a list of the internal IPs/ hostnames, then use a single externally accessible
+endpoint or stand-alone `hoststats` container to access those internal hosts.
+
+To use a proxy, you just need to provide an extra argument to the `HostStats`
+constructor:
+
+```bash
+from hostats.client import HostStats
+
+# List of IPs/ hostnames accessible from the proxy
+ip_list = ["1.2.3.4", "5.6.7.8"]
+
+# Proxy IP/ hostname accessible from the client
+proxy_ip = "9.8.7.6"
+
+# Set up the client
+hs = HostStats(ip_list, proxy=proxy_ip)
+```
+
 ## Handling results
 
 If the data has been written to CSV via the Python API, you can access the data
@@ -115,6 +141,37 @@ Run tests:
 ```bash
 ./bin/tests.sh
 ```
+
+### Developing on a local cluster
+
+If you want to run distributed tests against your local modifications, you can
+run the following:
+
+```bash
+# Start up some hoststats containers and enter the client container
+./bin/dev.sh
+```
+
+From within this container, run tests:
+
+```bash
+# Non-distributed tests
+nosetests hoststats.tests --nocapture
+
+# Distributed tests
+nosetests hoststats.disttest --nocapture
+```
+
+You can then edit files and restart the target containers with:
+
+```bash
+./bin/dev_restart.sh
+```
+
+Once restarted, you can rerun the tests against servers with your changes.
+
+See the scripts mentioned above and
+[`docker-compose-dev.yml`](docker-compose-dev.yml) for more info.
 
 ## Releasing
 

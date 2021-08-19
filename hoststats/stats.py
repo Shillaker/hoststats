@@ -1,5 +1,9 @@
 import pandas as pd
 
+# Note - header keys must start with a capital, and be all lower-case otherwise
+FORWARD_HEADER = "Forwardhost"
+SERVER_PORT = "5000"
+
 ONE_MB = 1024.0 * 1024.0
 
 CPU_STATS = [

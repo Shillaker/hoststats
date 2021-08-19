@@ -1,3 +1,5 @@
+import logging
+
 import click
 
 from hoststats.app import app
@@ -10,7 +12,8 @@ def top():
 
 @top.command()
 def start():
-    click.echo("Starting hoststats")
+    logging.info("Starting hoststats")
+
     app.run(debug=True, host="0.0.0.0")
 
 

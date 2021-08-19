@@ -1,3 +1,4 @@
+import logging
 from os.path import exists
 
 import pandas as pd
@@ -8,7 +9,8 @@ class HostStatsResults:
         self.csv_file = csv_file
 
         if not exists(self.csv_file):
-            print(f"hoststats result file not found: {self.csv_file}")
+            logging.error(f"hoststats result file not found: {self.csv_file}")
+            raise RuntimeError("hoststas result file not found")
 
         self.full_results = pd.read_csv(self.csv_file)
 

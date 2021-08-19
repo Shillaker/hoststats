@@ -1,5 +1,8 @@
 import pandas as pd
 
+FORWARD_HEADER = "ForwardHost"
+SERVER_PORT = "5000"
+
 ONE_MB = 1024.0 * 1024.0
 
 CPU_STATS = [

@@ -3,16 +3,22 @@ import json
 import pandas as pd
 import requests
 
-from hoststats.stats import CPU_STATS, DISK_STATS, MEM_STATS, NET_STATS
-
-SERVER_PORT = "5000"
+from hoststats.stats import (
+    CPU_STATS,
+    DISK_STATS,
+    MEM_STATS,
+    NET_STATS,
+    FORWARD_HEADER,
+    SERVER_PORT,
+)
 
 
 class HostStats:
-    def __init__(self, host_list, test_mode=False):
+    def __init__(self, host_list, test_mode=False, proxy=None):
         self.host_list = host_list
         self.test_mode = test_mode
         self.is_running = False
+        self.proxy = proxy
 
         if self.test_mode:
             from hoststats.app import app
@@ -23,7 +29,7 @@ class HostStats:
 
         for h in host_list:
             print(f"Pinging {h}")
-            status, data = self.get_request(h, "ping")
+            status, data = self.make_request(h, "ping")
 
             if status != 200:
                 print(f"Failed to ping {h}, got code {status}")
@@ -36,7 +42,7 @@ class HostStats:
         if not successful_init:
             raise RuntimeError("hoststats client failed to initialise")
 
-    def get_request(self, host, url):
+    def make_request(self, host, url):
         if self.test_mode:
             resp = self.client.get(url)
             status_code = resp.status_code
@@ -44,20 +50,23 @@ class HostStats:
             data = None
             if resp.data:
                 data = resp.data.decode("utf-8")
+
+            return status_code, data
+
+        if self.proxy:
+            full_url = f"http://{self.proxy}:{SERVER_PORT}/{url}"
+            resp = requests.get(full_url, headers={FORWARD_HEADER: host})
         else:
             resp = requests.get(f"http://{host}:{SERVER_PORT}/{url}")
-            status_code = resp.status_code
 
-            data = resp.text
-
-        return status_code, data
+        return resp.status_code, resp.text
 
     def start_collection(self):
         successful_start = True
 
         for h in self.host_list:
             print(f"Starting collection on {h}")
-            status, resp = self.get_request(h, "start")
+            status, resp = self.make_request(h, "start")
 
             if status != 200:
                 print(f"Failed to start on {h}, got code {resp.status_code}")
@@ -94,7 +103,7 @@ class HostStats:
             df.to_csv(csv_path, header=False, mode="a", index=False)
 
     def pull_results_for_host(self, host):
-        status, data = self.get_request(host, "stop")
+        status, data = self.make_request(host, "stop")
         data_json = json.loads(data)
 
         cpu_stats = pd.read_json(json.dumps(data_json["cpu"]), orient="list")

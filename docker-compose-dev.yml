@@ -1,0 +1,36 @@
+version: "3"
+
+services:
+  target-one:
+    image: shillaker/hoststats:${VERSION}
+    volumes:
+      - .:/code/hoststats
+    expose:
+      - "5000"
+    command: /bin/bash -c "cd /code/hoststats && pip install -e . && hoststats start"
+
+  target-two:
+    image: shillaker/hoststats:${VERSION}
+    volumes:
+      - .:/code/hoststats
+    expose:
+      - "5000"
+    command: /bin/bash -c "cd /code/hoststats && pip install -e . && hoststats start"
+
+  target-three:
+    image: shillaker/hoststats:${VERSION}
+    volumes:
+      - .:/code/hoststats
+    expose:
+      - "5000"
+    command: /bin/bash -c "cd /code/hoststats && pip install -e . && hoststats start"
+
+  client:
+    image: shillaker/hoststats:${VERSION}
+    volumes:
+      - .:/code/hoststats
+    depends_on:
+      - target-one
+      - target-two
+      - target-three
+    command: "/bin/bash"

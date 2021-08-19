@@ -15,7 +15,7 @@ result_queue = None
 
 
 def _is_forward_request():
-    return bool(request.headers.get(FORWARD_HEADER))
+    return FORWARD_HEADER in request.headers
 
 
 def _do_forward_request():
@@ -26,20 +26,21 @@ def _do_forward_request():
         request.host, f"{target_host}:{SERVER_PORT}"
     )
 
-    # Strip out forward header
+    # Strip out forward header and host header
     forward_headers = {
-        key: value for (key, value) in request.headers if key != FORWARD_HEADER
+        k: v
+        for (k, v) in request.headers
+        if k.lower() not in [FORWARD_HEADER.lower(), "host"]
     }
 
-    logging.trace(f"Forwarding request from {original_url} to {forward_url}")
+    logging.debug(f"Forwarding request from {original_url} to {forward_url}")
+    logging.debug(f"Forwarding headers: {forward_headers}")
 
     # Make the forward request
     resp = requests.request(
         method=request.method,
         url=forward_url,
         headers=forward_headers,
-        data=request.get_data(),
-        cookies=request.cookies,
         allow_redirects=False,
     )
 

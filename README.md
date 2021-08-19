@@ -142,6 +142,34 @@ Run tests:
 ./bin/tests.sh
 ```
 
+### Developing on a local cluster
+
+If you're adding distributed tests, you can use a few local instances of the
+`hoststats` container with your local checkout mounted:
+
+```bash
+# Enter the client container
+./bin/dev.sh
+```
+
+From within this container, run tests:
+
+```bash
+# Non-distributed tests
+nosetests hoststats.tests --nocapture
+
+# Distributed tests
+nosetests hoststats.disttest --nocapture
+```
+
+You can then edit files and restart the target containers with:
+
+```bash
+./bin/dev_restart.sh
+```
+
+Then rerun the tests with the changes picked up.
+
 ## Releasing
 
 To push to PyPI, make sure you have set up [Twine keyring

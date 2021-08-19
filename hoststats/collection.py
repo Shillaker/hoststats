@@ -40,7 +40,7 @@ def collect_metrics(kill_queue, result_queue):
             res = kill_queue.get_nowait()
 
             if res:
-                logging.debug("Finishing metrics collection process")
+                logging.debug("Metrics collection finished")
 
                 full_data = {
                     "cpu": cpu_stats.to_dict(orient="list"),

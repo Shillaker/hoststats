@@ -4,6 +4,8 @@ from flask import Blueprint, request, Response
 
 import requests
 
+import logging
+
 from hoststats.stats import FORWARD_HEADER, SERVER_PORT
 from hoststats.collection import collect_metrics
 
@@ -20,15 +22,20 @@ def _is_forward_request():
 
 def _do_forward_request():
     # Note, Flask's request.host field contains the port too
+    original_url = request.url
     target_host = request.headers[FORWARD_HEADER]
-    forward_url = (
-        request.url.replace(request.host, f"{target_host}:{SERVER_PORT}"),
+    forward_url = original_url.replace(
+        request.host, f"{target_host}:{SERVER_PORT}"
     )
 
+    # Strip out forward header
     forward_headers = {
         key: value for (key, value) in request.headers if key != FORWARD_HEADER
     }
 
+    logging.trace(f"Forwarding request from {original_url} to {forward_url}")
+
+    # Make the forward request
     resp = requests.request(
         method=request.method,
         url=forward_url,
@@ -38,6 +45,7 @@ def _do_forward_request():
         allow_redirects=False,
     )
 
+    # Strip out undesired headers from the forwarded response
     excluded_headers = [
         "content-encoding",
         "content-length",
@@ -50,7 +58,7 @@ def _do_forward_request():
         if name.lower() not in excluded_headers
     ]
 
-    # Build Flask response
+    # Build Flask response from forwarded response
     return Response(resp.content, resp.status_code, headers)
 
 
@@ -72,7 +80,7 @@ def start_recording():
     global result_queue
 
     if metrics_process is not None:
-        print("Not starting, process already running")
+        logging.warn("Not starting metrics recording, already running")
         return "Not started"
 
     kill_queue = Queue()
@@ -96,7 +104,7 @@ def stop_recording():
     global result_queue
 
     if metrics_process is None:
-        print("Not stopping, no process running")
+        logging.warn("Not stopping metrics recording, not running")
         return
 
     kill_queue.put("die")

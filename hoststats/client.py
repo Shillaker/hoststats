@@ -1,5 +1,5 @@
 import json
-
+import logging
 import pandas as pd
 import requests
 
@@ -28,15 +28,15 @@ class HostStats:
         successful_init = True
 
         for h in host_list:
-            print(f"Pinging {h}")
+            logging.debug(f"Pinging {h}")
             status, data = self.make_request(h, "ping")
 
             if status != 200:
-                print(f"Failed to ping {h}, got code {status}")
+                logging.error(f"Failed to ping {h}, got code {status}")
                 successful_init = False
 
             if data != "PONG":
-                print(f"Got unexpected response to ping: {data}")
+                logging.error(f"Got unexpected response to ping: {data}")
                 successful_init = False
 
         if not successful_init:
@@ -65,11 +65,13 @@ class HostStats:
         successful_start = True
 
         for h in self.host_list:
-            print(f"Starting collection on {h}")
+            logging.debug(f"Starting collection on {h}")
             status, resp = self.make_request(h, "start")
 
             if status != 200:
-                print(f"Failed to start on {h}, got code {resp.status_code}")
+                logging.error(
+                    f"Failed to start on {h}, got code {resp.status_code}"
+                )
                 successful_start = False
 
             if not successful_start:
@@ -94,7 +96,7 @@ class HostStats:
             fh.write("\n")
 
         for h in self.host_list:
-            print(f"Writing results for {h}")
+            logging.debug(f"Writing results for {h}")
 
             # Pull the results
             df = self.pull_results_for_host(h)

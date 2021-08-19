@@ -1,6 +1,7 @@
 import json
 import sys
 import time
+import logging
 from time import sleep
 
 import psutil
@@ -39,7 +40,7 @@ def collect_metrics(kill_queue, result_queue):
             res = kill_queue.get_nowait()
 
             if res:
-                print("Finishing metrics collection process")
+                logging.debug("Finishing metrics collection process")
 
                 full_data = {
                     "cpu": cpu_stats.to_dict(orient="list"),

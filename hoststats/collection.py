@@ -1,7 +1,7 @@
 import json
+import logging
 import sys
 import time
-import logging
 from time import sleep
 
 import psutil

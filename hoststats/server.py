@@ -1,13 +1,11 @@
+import logging
 from multiprocessing import Process, Queue
 
-from flask import Blueprint, request, Response
-
 import requests
+from flask import Blueprint, Response, request
 
-import logging
-
-from hoststats.stats import FORWARD_HEADER, SERVER_PORT
 from hoststats.collection import collect_metrics
+from hoststats.stats import FORWARD_HEADER, SERVER_PORT
 
 metrics_api = Blueprint("metrics_api", __name__)
 

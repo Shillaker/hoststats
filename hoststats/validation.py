@@ -1,5 +1,5 @@
-from os.path import exists
 import logging
+from os.path import exists
 
 import pandas as pd
 
@@ -21,7 +21,9 @@ def validate_csv_data(csv_path, expected_hosts):
     )
     cols = [c for c in data.columns]
     if cols != expected_cols:
-        logging.error(f"hoststats expected cols {expected_cols}, got {data.columns}")
+        logging.error(
+            f"hoststats expected cols {expected_cols}, got {data.columns}"
+        )
         is_valid = False
 
     # Check hosts list

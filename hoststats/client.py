@@ -1,16 +1,11 @@
 import json
 import logging
+
 import pandas as pd
 import requests
 
-from hoststats.stats import (
-    CPU_STATS,
-    DISK_STATS,
-    MEM_STATS,
-    NET_STATS,
-    FORWARD_HEADER,
-    SERVER_PORT,
-)
+from hoststats.stats import (CPU_STATS, DISK_STATS, FORWARD_HEADER, MEM_STATS,
+                             NET_STATS, SERVER_PORT)
 
 
 class HostStats:

@@ -33,4 +33,4 @@ services:
       - target-one
       - target-two
       - target-three
-    command: "/bin/bash"
+    command: /bin/bash

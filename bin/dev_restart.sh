@@ -2,7 +2,7 @@
 
 export VERSION=$(cat VERSION)
 
-# Run dist tests in client container
+# Restart the target containers
 docker-compose -f docker-compose-dev.yml \
     restart \
     target-one \

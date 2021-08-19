@@ -144,11 +144,11 @@ Run tests:
 
 ### Developing on a local cluster
 
-If you're adding distributed tests, you can use a few local instances of the
-`hoststats` container with your local checkout mounted:
+If you want to run distributed tests against your local modifications, you can
+run the following:
 
 ```bash
-# Enter the client container
+# Start up some hoststats containers and enter the client container
 ./bin/dev.sh
 ```
 
@@ -168,7 +168,10 @@ You can then edit files and restart the target containers with:
 ./bin/dev_restart.sh
 ```
 
-Then rerun the tests with the changes picked up.
+Once restarted, you can rerun the tests against servers with your changes.
+
+See the scripts mentioned above and
+[`docker-compose-dev.yml`](docker-compose-dev.yml) for more info.
 
 ## Releasing
 

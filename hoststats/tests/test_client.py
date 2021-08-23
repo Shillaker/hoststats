@@ -1,8 +1,10 @@
+import logging
 from time import sleep
 from unittest import TestCase, mock
 from unittest.mock import call
 
 from hoststats.client import HostStats
+from hoststats.stats import FORWARD_HEADER
 from hoststats.validation import validate_csv_data
 
 
@@ -17,8 +19,8 @@ class MockResponse:
 
 
 def mocked_requests_get(url, *args, **kwargs):
-    print(
-        "Calling mocked GET: {}, headers={}".format(url, kwargs.get("headers"))
+    logging.debug(
+        f"Calling mocked GET: {url}, headers={kwargs.get('headers')}"
     )
 
     if url.endswith("ping"):
@@ -88,19 +90,19 @@ class TestHostStatsClient(TestCase):
         expected_calls = [
             call(
                 "http://8.7.6.5:5000/ping",
-                headers={"Forwardhost": "1.2.3.4"},
+                headers={FORWARD_HEADER: "1.2.3.4"},
             ),
             call(
                 "http://8.7.6.5:5000/ping",
-                headers={"Forwardhost": "5.6.7.8"},
+                headers={FORWARD_HEADER: "5.6.7.8"},
             ),
             call(
                 "http://8.7.6.5:5000/start",
-                headers={"Forwardhost": "1.2.3.4"},
+                headers={FORWARD_HEADER: "1.2.3.4"},
             ),
             call(
                 "http://8.7.6.5:5000/start",
-                headers={"Forwardhost": "5.6.7.8"},
+                headers={FORWARD_HEADER: "5.6.7.8"},
             ),
         ]
 

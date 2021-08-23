@@ -45,13 +45,11 @@ class HostStats:
 
         if self.proxy:
             logging.debug(
-                "Created hoststats proxy on {} for {}".format(
-                    self.proxy, self.host_list
-                )
+                f"Created hoststats proxy on {self.proxy} for {self.host_list}"
             )
         else:
             logging.debug(
-                "Created hoststats client for {}".format(self.host_list)
+                f"Created hoststats client for {self.host_list}"
             )
 
     def make_request(self, host, url):

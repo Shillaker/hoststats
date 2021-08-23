@@ -80,7 +80,7 @@ def start_recording():
 
     if metrics_process is not None:
         logging.warn("Not starting metrics recording, already running")
-        return "Not started"
+        return "Starting hoststats already started"
 
     kill_queue = Queue()
     result_queue = Queue()
@@ -104,7 +104,7 @@ def stop_recording():
 
     if metrics_process is None:
         logging.warn("Not stopping metrics recording, not running")
-        return
+        return "Stopping hoststats without starting"
 
     kill_queue.put("die")
     metrics_process.join()

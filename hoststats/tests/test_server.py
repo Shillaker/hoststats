@@ -1,14 +1,14 @@
 import json
-import time
 import logging
+import time
 from multiprocessing import Process, Queue
 from time import sleep
 from unittest import TestCase, mock
 from unittest.mock import call
 
 from hoststats.app import app
-from hoststats.stats import FORWARD_HEADER
 from hoststats.collection import SLEEP_INTERVAL_SECS, collect_metrics
+from hoststats.stats import FORWARD_HEADER
 
 TEST_CLIENT_HEADERS = {"User-Agent": "werkzeug/2.0.1"}
 

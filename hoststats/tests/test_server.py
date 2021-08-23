@@ -1,11 +1,43 @@
 import json
+import logging
 import time
 from multiprocessing import Process, Queue
 from time import sleep
-from unittest import TestCase
+from unittest import TestCase, mock
+from unittest.mock import call
 
 from hoststats.app import app
 from hoststats.collection import SLEEP_INTERVAL_SECS, collect_metrics
+from hoststats.stats import FORWARD_HEADER
+
+TEST_CLIENT_HEADERS = {"User-Agent": "werkzeug/2.0.1"}
+
+
+class MockResponse:
+    def __init__(self, text, status_code):
+        self.text = text
+        self.content = text
+        self.data = bytes(text, "utf-8")
+        self.status_code = status_code
+
+        self.headers = {
+            "content-encoding": "blah",
+            "content-length": 123,
+            "some-other-header": "hi there",
+        }
+
+
+def mocked_requests_request(method, url, headers):
+    logging.debug(f"Calling mocked request: {method}, {url}, {headers}")
+
+    if url.endswith("ping"):
+        return MockResponse("mocked ping", 200)
+    elif url.endswith("start"):
+        return MockResponse("mocked start", 200)
+    elif url.endswith("stop"):
+        return MockResponse("mocked stop", 200)
+    else:
+        raise RuntimeError("Unrecognised mock request")
 
 
 class TestHostStatsCollection(TestCase):
@@ -112,3 +144,53 @@ class TestHostStatsCollection(TestCase):
         for mem_pct in mem["MEMORY_USED_PCT"]:
             self.assertGreaterEqual(mem_pct, 0)
             self.assertLessEqual(mem_pct, 100)
+
+    def _check_mocked_request(self, mock_req, url, expected_response):
+        resp = self.client.get(
+            url,
+            headers={
+                FORWARD_HEADER: "3.3.3.3",
+            },
+        )
+
+        self.assertEqual(resp.data.decode("utf-8"), expected_response)
+
+        expected_calls = [
+            call(
+                method="GET",
+                url=f"http://3.3.3.3:5000/{url}",
+                headers=TEST_CLIENT_HEADERS,
+            ),
+        ]
+
+        self.assertListEqual(mock_req.call_args_list, expected_calls)
+
+        # Check headers filtered on response
+        expected_headers = {
+            "Content-Length": f"{len(expected_response)}",
+            "Content-Type": "text/html; charset=utf-8",
+            "some-other-header": "hi there",
+        }
+        actual_headers = {k: v for (k, v) in resp.headers}
+        self.assertEqual(actual_headers, expected_headers)
+
+    @mock.patch(
+        "hoststats.server.requests.request",
+        side_effect=mocked_requests_request,
+    )
+    def test_mocked_ping_request(self, mock_req):
+        self._check_mocked_request(mock_req, "ping", "mocked ping")
+
+    @mock.patch(
+        "hoststats.server.requests.request",
+        side_effect=mocked_requests_request,
+    )
+    def test_mocked_start_request(self, mock_req):
+        self._check_mocked_request(mock_req, "start", "mocked start")
+
+    @mock.patch(
+        "hoststats.server.requests.request",
+        side_effect=mocked_requests_request,
+    )
+    def test_mocked_stop_request(self, mock_req):
+        self._check_mocked_request(mock_req, "stop", "mocked stop")

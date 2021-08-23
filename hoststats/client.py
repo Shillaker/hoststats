@@ -43,6 +43,13 @@ class HostStats:
         if not successful_init:
             raise RuntimeError("hoststats client failed to initialise")
 
+        if self.proxy:
+            logging.debug(
+                f"Created hoststats proxy on {self.proxy} for {self.host_list}"
+            )
+        else:
+            logging.debug(f"Created hoststats client for {self.host_list}")
+
     def make_request(self, host, url):
         if self.test_mode:
             resp = self.client.get(url)

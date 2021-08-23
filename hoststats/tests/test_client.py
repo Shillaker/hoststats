@@ -1,8 +1,34 @@
 from time import sleep
-from unittest import TestCase
+from unittest import TestCase, mock
+from unittest.mock import call
 
 from hoststats.client import HostStats
 from hoststats.validation import validate_csv_data
+
+
+class MockResponse:
+    def __init__(self, text, json_data, status_code):
+        self.text = text
+        self.json_data = json_data
+        self.status_code = status_code
+
+    def json(self):
+        return self.json_data
+
+
+def mocked_requests_get(url, *args, **kwargs):
+    print(
+        "Calling mocked GET: {}, headers={}".format(url, kwargs.get("headers"))
+    )
+
+    if url.endswith("ping"):
+        return MockResponse("PONG", None, 200)
+    elif url.endswith("start"):
+        return MockResponse("hoststats started", None, 200)
+    elif url.endswith("stop"):
+        return MockResponse(None, {"blah": 123}, 200)
+    else:
+        raise RuntimeError("Unrecognised mock request")
 
 
 class TestHostStatsClient(TestCase):
@@ -18,3 +44,64 @@ class TestHostStatsClient(TestCase):
         s.stop_and_write_to_csv(csv_path)
 
         self.assertTrue(validate_csv_data(csv_path, hosts))
+
+    @mock.patch(
+        "hoststats.client.requests.get", side_effect=mocked_requests_get
+    )
+    def test_mocked_requests(self, mock_get):
+        hosts = ["1.2.3.4", "5.6.7.8"]
+
+        s = HostStats(hosts)
+        s.start_collection()
+
+        self.assertEqual(len(mock_get.call_args_list), 4)
+
+        expected_calls = [
+            call(
+                "http://1.2.3.4:5000/ping",
+            ),
+            call(
+                "http://5.6.7.8:5000/ping",
+            ),
+            call(
+                "http://1.2.3.4:5000/start",
+            ),
+            call(
+                "http://5.6.7.8:5000/start",
+            ),
+        ]
+
+        self.assertListEqual(mock_get.call_args_list, expected_calls)
+
+    @mock.patch(
+        "hoststats.client.requests.get", side_effect=mocked_requests_get
+    )
+    def test_proxy_mocked_requests(self, mock_get):
+        hosts = ["1.2.3.4", "5.6.7.8"]
+        proxy = "8.7.6.5"
+
+        s = HostStats(hosts, proxy=proxy)
+        s.start_collection()
+
+        self.assertEqual(len(mock_get.call_args_list), 4)
+
+        expected_calls = [
+            call(
+                "http://8.7.6.5:5000/ping",
+                headers={"Forwardhost": "1.2.3.4"},
+            ),
+            call(
+                "http://8.7.6.5:5000/ping",
+                headers={"Forwardhost": "5.6.7.8"},
+            ),
+            call(
+                "http://8.7.6.5:5000/start",
+                headers={"Forwardhost": "1.2.3.4"},
+            ),
+            call(
+                "http://8.7.6.5:5000/start",
+                headers={"Forwardhost": "5.6.7.8"},
+            ),
+        ]
+
+        self.assertListEqual(mock_get.call_args_list, expected_calls)

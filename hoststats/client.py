@@ -15,11 +15,14 @@ from hoststats.stats import (
 
 
 class HostStats:
-    def __init__(self, host_list, test_mode=False, proxy=None):
+    def __init__(
+        self, host_list, test_mode=False, proxy=None, proxy_port=SERVER_PORT
+    ):
         self.host_list = host_list
         self.test_mode = test_mode
         self.is_running = False
         self.proxy = proxy
+        self.proxy_port = proxy_port
 
         if self.test_mode:
             from hoststats.app import app
@@ -62,7 +65,7 @@ class HostStats:
             return status_code, data
 
         if self.proxy:
-            full_url = f"http://{self.proxy}:{SERVER_PORT}/{url}"
+            full_url = f"http://{self.proxy}:{self.proxy_port}/{url}"
             resp = requests.get(full_url, headers={FORWARD_HEADER: host})
         else:
             resp = requests.get(f"http://{host}:{SERVER_PORT}/{url}")

@@ -107,3 +107,36 @@ class TestHostStatsClient(TestCase):
         ]
 
         self.assertListEqual(mock_get.call_args_list, expected_calls)
+
+    @mock.patch(
+        "hoststats.client.requests.get", side_effect=mocked_requests_get
+    )
+    def test_proxy_mocked_requests_custom_port(self, mock_get):
+        hosts = ["1.2.3.4", "5.6.7.8"]
+        proxy = "8.7.6.5"
+
+        s = HostStats(hosts, proxy=proxy, proxy_port=1234)
+        s.start_collection()
+
+        self.assertEqual(len(mock_get.call_args_list), 4)
+
+        expected_calls = [
+            call(
+                "http://8.7.6.5:1234/ping",
+                headers={FORWARD_HEADER: "1.2.3.4"},
+            ),
+            call(
+                "http://8.7.6.5:1234/ping",
+                headers={FORWARD_HEADER: "5.6.7.8"},
+            ),
+            call(
+                "http://8.7.6.5:1234/start",
+                headers={FORWARD_HEADER: "1.2.3.4"},
+            ),
+            call(
+                "http://8.7.6.5:1234/start",
+                headers={FORWARD_HEADER: "5.6.7.8"},
+            ),
+        ]
+
+        self.assertListEqual(mock_get.call_args_list, expected_calls)

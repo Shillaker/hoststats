@@ -82,14 +82,10 @@ If your client host can't directly access the target hosts, you can specify a
 proxy server, which must also have the `hoststats` server running. This proxy
 can also be included in the list of target hosts.
 
-This can be useful in environments like Kubernetes deployments, where you'd get
-a list of the internal IPs/ hostnames, then use a single externally accessible
-endpoint or stand-alone `hoststats` container to access those internal hosts.
-
 To use a proxy, you just need to provide an extra argument to the `HostStats`
 constructor:
 
-```bash
+```python
 from hostats.client import HostStats
 
 # List of IPs/ hostnames accessible from the proxy
@@ -100,6 +96,30 @@ proxy_ip = "9.8.7.6"
 
 # Set up the client
 hs = HostStats(ip_list, proxy=proxy_ip)
+```
+
+## Kubectl
+
+If running in a Kubernetes cluster, you can use `kubectl` rather than HTTP. This
+is useful if your client host is outside the cluster and you don't have direct
+ingress to each container you're gathering stats from.
+
+To use `kubectl`, you need to pass certain arguments to the `HostStats`
+constructor, and the list of hosts should be a list of pod names:
+
+```python
+from hostats.client import HostStats
+
+# List of pod names
+pods = ["pod-a", "pod-b", "pod-c"]
+
+# Set up the client
+hs = HostStats(
+    pods,
+    kubectl=True,
+    kubectl_ns="my-namespace", # K8s namespace (optional)
+    kubectl_container="my-container", # Container name in the pods (optional)
+)
 ```
 
 ## Handling results

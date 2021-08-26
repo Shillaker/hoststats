@@ -1,5 +1,6 @@
 import json
 import logging
+from subprocess import PIPE, run
 
 import pandas as pd
 import requests
@@ -16,13 +17,24 @@ from hoststats.stats import (
 
 class HostStats:
     def __init__(
-        self, host_list, test_mode=False, proxy=None, proxy_port=SERVER_PORT
+        self,
+        host_list,
+        test_mode=False,
+        proxy=None,
+        proxy_port=SERVER_PORT,
+        kubectl=False,
+        kubectl_container=None,
+        kubectl_ns=None,
     ):
         self.host_list = host_list
         self.test_mode = test_mode
         self.is_running = False
         self.proxy = proxy
         self.proxy_port = proxy_port
+
+        self.kubectl = kubectl
+        self.kubectl_container = kubectl_container
+        self.kubectl_ns = kubectl_ns
 
         if self.test_mode:
             from hoststats.app import app
@@ -64,7 +76,28 @@ class HostStats:
 
             return status_code, data
 
-        if self.proxy:
+        if self.kubectl:
+            cmd = [
+                "kubectl",
+                f"-n {self.kubectl_ns}" if self.kubectl_ns else "",
+                f"-c {self.kubectl_container}"
+                if self.kubectl_container
+                else "",
+                "exec",
+                host,
+                "--",
+                f"curl -s http://localhost:5000/{url}",
+            ]
+            cmd_str = " ".join(cmd)
+            res = run(cmd_str, shell=True, stdout=PIPE, stderr=PIPE)
+
+            output = res.stdout.decode("utf-8")
+            if res.returncode == 0:
+                return 200, output
+            else:
+                return 500, output
+
+        elif self.proxy:
             full_url = f"http://{self.proxy}:{self.proxy_port}/{url}"
             resp = requests.get(full_url, headers={FORWARD_HEADER: host})
         else:

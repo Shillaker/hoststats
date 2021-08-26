@@ -84,7 +84,9 @@ class HostStats:
                 if self.kubectl_container
                 else "",
                 "exec",
-                "--" f"curl -s http://localhost:5000/{url}",
+                host,
+                "--",
+                f"curl -s http://localhost:5000/{url}",
             ]
             cmd_str = " ".join(cmd)
             res = run(cmd_str, shell=True, stdout=PIPE, stderr=PIPE)

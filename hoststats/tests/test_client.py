@@ -3,6 +3,8 @@ from time import sleep
 from unittest import TestCase, mock
 from unittest.mock import call
 
+from subprocess import PIPE
+
 from hoststats.client import HostStats
 from hoststats.stats import FORWARD_HEADER
 from hoststats.validation import validate_csv_data
@@ -29,6 +31,23 @@ def mocked_requests_get(url, *args, **kwargs):
         return MockResponse("hoststats started", None, 200)
     elif url.endswith("stop"):
         return MockResponse(None, {"blah": 123}, 200)
+    else:
+        raise RuntimeError("Unrecognised mock request")
+
+
+class MockProcessOutput:
+    def __init__(self, returncode, output):
+        self.stdout = output
+        self.returncode = returncode
+
+
+def mocked_run(cmd, shell=True, stderr=None, stdout=None, **kwargs):
+    logging.debug(f"Calling mocked run: {cmd}")
+
+    if cmd.endswith("ping"):
+        return MockProcessOutput(0, bytes("PONG", "utf-8"))
+    elif cmd.endswith("start"):
+        return MockProcessOutput(0, bytes("hoststats started", "utf-8"))
     else:
         raise RuntimeError("Unrecognised mock request")
 
@@ -140,3 +159,43 @@ class TestHostStatsClient(TestCase):
         ]
 
         self.assertListEqual(mock_get.call_args_list, expected_calls)
+
+    @mock.patch("hoststats.client.run", side_effect=mocked_run)
+    def test_kubectl_cmds(self, mock_run):
+        hosts = ["pod-a", "pod-b"]
+
+        s = HostStats(
+            hosts, kubectl=True, kubectl_container="blah", kubectl_ns="foobar"
+        )
+        s.start_collection()
+
+        self.assertEqual(len(mock_run.call_args_list), 4)
+
+        expected_calls = [
+            call(
+                "kubectl -n foobar -c blah exec pod-a -- curl -s http://localhost:5000/ping",
+                shell=True,
+                stdout=PIPE,
+                stderr=PIPE,
+            ),
+            call(
+                "kubectl -n foobar -c blah exec pod-b -- curl -s http://localhost:5000/ping",
+                shell=True,
+                stdout=PIPE,
+                stderr=PIPE,
+            ),
+            call(
+                "kubectl -n foobar -c blah exec pod-a -- curl -s http://localhost:5000/start",
+                shell=True,
+                stdout=PIPE,
+                stderr=PIPE,
+            ),
+            call(
+                "kubectl -n foobar -c blah exec pod-b -- curl -s http://localhost:5000/start",
+                shell=True,
+                stdout=PIPE,
+                stderr=PIPE,
+            ),
+        ]
+
+        self.assertListEqual(mock_run.call_args_list, expected_calls)

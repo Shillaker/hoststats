@@ -1,9 +1,8 @@
 import logging
+from subprocess import PIPE
 from time import sleep
 from unittest import TestCase, mock
 from unittest.mock import call
-
-from subprocess import PIPE
 
 from hoststats.client import HostStats
 from hoststats.stats import FORWARD_HEADER
@@ -171,31 +170,24 @@ class TestHostStatsClient(TestCase):
 
         self.assertEqual(len(mock_run.call_args_list), 4)
 
+        def _build_call(pod, url):
+            cmd = [
+                "kubectl",
+                "-n foobar",
+                "-c blah",
+                "exec",
+                pod,
+                "--",
+                f"curl -s http://localhost:5000/{url}",
+            ]
+
+            return call(" ".join(cmd), shell=True, stdout=PIPE, stderr=PIPE)
+
         expected_calls = [
-            call(
-                "kubectl -n foobar -c blah exec pod-a -- curl -s http://localhost:5000/ping",
-                shell=True,
-                stdout=PIPE,
-                stderr=PIPE,
-            ),
-            call(
-                "kubectl -n foobar -c blah exec pod-b -- curl -s http://localhost:5000/ping",
-                shell=True,
-                stdout=PIPE,
-                stderr=PIPE,
-            ),
-            call(
-                "kubectl -n foobar -c blah exec pod-a -- curl -s http://localhost:5000/start",
-                shell=True,
-                stdout=PIPE,
-                stderr=PIPE,
-            ),
-            call(
-                "kubectl -n foobar -c blah exec pod-b -- curl -s http://localhost:5000/start",
-                shell=True,
-                stdout=PIPE,
-                stderr=PIPE,
-            ),
+            _build_call("pod-a", "ping"),
+            _build_call("pod-b", "ping"),
+            _build_call("pod-a", "start"),
+            _build_call("pod-b", "start"),
         ]
 
         self.assertListEqual(mock_run.call_args_list, expected_calls)

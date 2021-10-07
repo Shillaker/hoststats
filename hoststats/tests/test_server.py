@@ -10,8 +10,6 @@ from hoststats.app import app
 from hoststats.collection import SLEEP_INTERVAL_SECS, collect_metrics
 from hoststats.stats import FORWARD_HEADER
 
-TEST_CLIENT_HEADERS = {"User-Agent": "werkzeug/2.0.1"}
-
 
 class MockResponse:
     def __init__(self, text, status_code):
@@ -146,11 +144,16 @@ class TestHostStatsCollection(TestCase):
             self.assertLessEqual(mem_pct, 100)
 
     def _check_mocked_request(self, mock_req, url, expected_response):
+        # Without setting our own user agent we get something chosen by the
+        # underlying Flask mock client which we would have to hard code.
+        user_agent = "foobar-agent"
+
         resp = self.client.get(
             url,
             headers={
                 FORWARD_HEADER: "3.3.3.3",
             },
+            environ_base={"HTTP_USER_AGENT": user_agent},
         )
 
         self.assertEqual(resp.data.decode("utf-8"), expected_response)
@@ -159,7 +162,7 @@ class TestHostStatsCollection(TestCase):
             call(
                 method="GET",
                 url=f"http://3.3.3.3:5000/{url}",
-                headers=TEST_CLIENT_HEADERS,
+                headers={"User-Agent": user_agent},
             ),
         ]
 

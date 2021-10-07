@@ -33,11 +33,19 @@ class TestHostStatsDistributed(TestCase):
 
         self.do_dist_checks(TEST_HOSTS, proxy=proxy_ip)
 
-    def do_dist_checks(self, hosts, proxy=None):
+    def test_collection_long_run(self):
+        time_to_sleep = 90
+        print(
+            f"Test collecting results after sleeping for {time_to_sleep} seconds"
+        )
+
+        self.do_dist_checks(TEST_HOSTS, seconds_to_sleep=time_to_sleep)
+
+    def do_dist_checks(self, hosts, proxy=None, seconds_to_sleep=5):
         s = HostStats(hosts, proxy=proxy)
         s.start_collection()
 
-        sleep(5)
+        sleep(seconds_to_sleep)
 
         csv_path = "/tmp/hoststats.csv"
         s.stop_and_write_to_csv(csv_path)

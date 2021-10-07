@@ -1,10 +1,11 @@
 # hoststats [![Tests](https://github.com/Shillaker/hoststats/workflows/Tests/badge.svg?branch=master)](https://github.com/Shillaker/hoststats/actions) [![License](https://img.shields.io/github/license/Shillaker/hoststats.svg)](https://github.com/Shillaker/hoststats/blob/master/LICENSE.md)  [![Release](https://img.shields.io/github/release/Shillaker/hoststats.svg)](https://github.com/Shillaker/hoststats/releases/)
 
 `hoststats` captures resource usage (CPU, memory, network, disk) on a set of
-remote hosts over a period of time.
+remote hosts or containers over a period of time.
 
-Collection can be started and stopped from a client host via HTTP or the
-included Python API. Results are written to a CSV file on the client machine.
+Collection can be started and stopped from a client host via HTTP or `kubectl` 
+using the `hoststats` Python API. Results are written to a CSV file on the client 
+machine, and can be loaded into Pandas dataframes using `hoststats`.
 
 ## The `hoststats` server
 

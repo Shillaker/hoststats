@@ -9,8 +9,9 @@ machine, and can be loaded into Pandas dataframes using `hoststats`.
 
 ## The `hoststats` server
 
-The `hoststats` server must run on each host from which you wish to collect
-metrics, and port `5000` must be accessible to the client.
+The `hoststats` server must run on each host/ container from which you wish to 
+collect metrics, and port `5000` must be accessible to the client if you wish to 
+use HTTP.
 
 ### Using Docker
 
@@ -59,7 +60,7 @@ hs.start_collection()
 hs.stop_and_write_to_csv("hoststats.csv")
 ```
 
-### HTTP API
+### Directly via HTTP API
 
 Note that although the HTTP API works, the data that comes out requires more
 processing.
@@ -119,7 +120,7 @@ hs = HostStats(
     pods,
     kubectl=True,
     kubectl_ns="my-namespace", # K8s namespace (optional)
-    kubectl_container="my-container", # Container name in the pods (optional)
+    kubectl_container="my-container", # Container name within the pod (optional)
 )
 ```
 

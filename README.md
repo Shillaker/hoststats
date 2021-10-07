@@ -1,16 +1,22 @@
 # hoststats [![Tests](https://github.com/Shillaker/hoststats/workflows/Tests/badge.svg?branch=master)](https://github.com/Shillaker/hoststats/actions) [![License](https://img.shields.io/github/license/Shillaker/hoststats.svg)](https://github.com/Shillaker/hoststats/blob/master/LICENSE.md)  [![Release](https://img.shields.io/github/release/Shillaker/hoststats.svg)](https://github.com/Shillaker/hoststats/releases/)
 
 `hoststats` captures resource usage (CPU, memory, network, disk) on a set of
-remote hosts or containers over a period of time.
+remote hosts or containers over a period of time, then lets you aggregate and
+filter the results using Pandas.
 
-Collection can be started and stopped from a client host via HTTP or `kubectl` 
-using the `hoststats` Python API. Results are written to a CSV file on the client 
-machine, and can be loaded into Pandas dataframes using `hoststats`.
+Usage:
+
+1. Start collection from a client host via HTTP or `kubectl` using the Python
+   client, or directly over HTTP.
+2. Stop collection, at which point `hoststats` pulls the results from all hosts
+   into a single CSV file on the client machine.
+3. Use `hoststats` to load, aggregate and filter data from this CSV using
+   Pandas.
 
 ## The `hoststats` server
 
-The `hoststats` server must run on each host/ container from which you wish to 
-collect metrics, and port `5000` must be accessible to the client if you wish to 
+The `hoststats` server must run on each host/ container from which you wish to
+collect metrics, and port `5000` must be accessible to the client if you wish to
 use HTTP.
 
 ### Using Docker

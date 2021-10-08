@@ -2,13 +2,14 @@ import json
 import logging
 import sys
 import time
+from os import environ
 from time import sleep
 
 import psutil
 
 from hoststats.stats import ONE_MB, get_stats_dfs
 
-SLEEP_INTERVAL_SECS = 2
+SLEEP_INTERVAL_MS = int(environ.get("HOSTSTATS_SLEEP_INTERVAL_MS", "2000"))
 
 
 def collect_metrics(kill_queue, result_queue):
@@ -35,6 +36,7 @@ def collect_metrics(kill_queue, result_queue):
         cpu_stats[f"CPU_{cpu_num}_PCT_SYSTEM"] = list()
 
     while True:
+        logging.warn("TICK interval: {}".format(SLEEP_INTERVAL_MS))
         # Check queue to see if we need to finish
         if not kill_queue.empty():
             res = kill_queue.get_nowait()
@@ -130,4 +132,4 @@ def collect_metrics(kill_queue, result_queue):
         net_stats.loc[len(net_stats.index)] = net_row
 
         # Sleep until next measurement
-        sleep(SLEEP_INTERVAL_SECS)
+        sleep(float(SLEEP_INTERVAL_MS) / 1000)

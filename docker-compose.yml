@@ -5,16 +5,22 @@ services:
     image: shillaker/hoststats:${VERSION}
     expose:
       - "5000"
+    environment:
+      HOSTSTATS_SLEEP_INTERVAL_MS: "500"
 
   target-two:
     image: shillaker/hoststats:${VERSION}
     expose:
       - "5000"
+    environment:
+      HOSTSTATS_SLEEP_INTERVAL_MS: "500"
 
   target-three:
     image: shillaker/hoststats:${VERSION}
     expose:
       - "5000"
+    environment:
+      HOSTSTATS_SLEEP_INTERVAL_MS: "500"
 
   client:
     image: shillaker/hoststats:${VERSION}

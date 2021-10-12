@@ -8,6 +8,8 @@ services:
     expose:
       - "5000"
     command: /bin/bash -c "cd /code/hoststats && pip install -e . && hoststats start"
+    environment:
+      HOSTSTATS_SLEEP_INTERVAL_MS: "500"
 
   target-two:
     image: shillaker/hoststats:${VERSION}
@@ -16,6 +18,8 @@ services:
     expose:
       - "5000"
     command: /bin/bash -c "cd /code/hoststats && pip install -e . && hoststats start"
+    environment:
+      HOSTSTATS_SLEEP_INTERVAL_MS: "500"
 
   target-three:
     image: shillaker/hoststats:${VERSION}
@@ -24,6 +28,8 @@ services:
     expose:
       - "5000"
     command: /bin/bash -c "cd /code/hoststats && pip install -e . && hoststats start"
+    environment:
+      HOSTSTATS_SLEEP_INTERVAL_MS: "500"
 
   client:
     image: shillaker/hoststats:${VERSION}

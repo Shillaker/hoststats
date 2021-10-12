@@ -9,5 +9,5 @@ docker-compose -f docker-compose-dev.yml up --no-recreate -d target-two
 docker-compose -f docker-compose-dev.yml up --no-recreate -d target-three
 
 # Run dist tests in client container
-docker-compose -f docker-compose-dev.yml run client /bin/bash
+docker-compose -f docker-compose-dev.yml run --rm client /bin/bash
 

@@ -117,8 +117,10 @@ def stop_recording():
         return msg
 
     kill_queue.put("die")
-    metrics_process.join()
+    # Get the results before we join the process, otherwise if the queue buffers
+    # fill the program will deadlock
     result_json = result_queue.get()
+    metrics_process.join()
 
     metrics_process = None
     kill_queue = None

@@ -7,8 +7,10 @@ from unittest import TestCase, mock
 from unittest.mock import call
 
 from hoststats.app import app
-from hoststats.collection import SLEEP_INTERVAL_SECS, collect_metrics
+from hoststats.collection import SLEEP_INTERVAL_MS, collect_metrics
 from hoststats.stats import FORWARD_HEADER
+
+SLEEP_INTERVAL_SECS = SLEEP_INTERVAL_MS / 1000
 
 
 class MockResponse:

@@ -24,6 +24,9 @@ class TestHostStatsResults(TestCase):
         self.assertEqual(
             r.get_stats(), CPU_STATS + MEM_STATS + DISK_STATS + NET_STATS
         )
+        self.assertEqual(
+            len(r.get_stat_per_host("CPU_PCT").keys()), len(hosts)
+        )
 
         self.assertRaises(RuntimeError, r.get_stat_per_host, "blahblah")
         self.assertRaises(RuntimeError, r.get_median_stat, "blahblah")

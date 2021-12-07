@@ -58,7 +58,9 @@ class HostStatsResults:
         stats_per_host = dict()
         for host in hosts:
             host_ts = self.full_results["Host"] == host
-            stats_per_host[host] = host_ts[stat]
+            stats_per_host[host] = self.full_results.loc[host_ts][
+                ["Timestamp", stat]
+            ]
 
         return stats_per_host
 

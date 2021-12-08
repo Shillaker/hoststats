@@ -219,7 +219,7 @@ Then:
 ./bin/build.sh
 
 # Check the distributed tests passs
-./bin/dist_test.sh
+./bin/dist_tests.sh
 
 # Push the package
 ./bin/release.sh
@@ -227,3 +227,5 @@ Then:
 
 Once everything looks good, create a release manually [on
 Github](https://github.com/Shillaker/hoststats/releases/new).
+
+After that, merge the PR, then retag from the master branch.
